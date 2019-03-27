@@ -54,5 +54,5 @@ app.get('/account', (request, response) => {
 });
 
 app.listen(port, () => {
-    console.log(`Server is up on the port 8080 ${port}`);
+    console.log(`Server is up on the port ${port}`);
 });
