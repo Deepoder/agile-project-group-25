@@ -28,5 +28,21 @@
             </div>
         </form>
 
+        Name: <input type="text" id="myText" value="">
+
+        <p>Click the button to change the value of the text field.</p>
+
+        <button onclick="myFunction()">Try it</button>
+
+        <p id="output"></p>
+
+        <script>
+
+            function myFunction() {
+                var testing = document.getElementById("myText").value;
+                document.getElementById("output").innerHTML = testing;
+            }
+        </script>
+
     </body>
 </html>
