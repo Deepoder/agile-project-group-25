@@ -31,6 +31,13 @@ app.get('/login', (request, response) => {
     })
 });
 
+app.get('/sign_up', (request, response) => {
+    response.render('sign_up.hbs', {
+        title_page: 'Sign Up Form',
+        header: 'Registration Form'
+    })
+});
+
 app.get('/about', (request, response) => {
     response.render('about.hbs', {
         title_page: 'About Page',
