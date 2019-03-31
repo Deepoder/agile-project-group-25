@@ -2,6 +2,7 @@ const express = require('express');
 const hbs = require('hbs');
 const axios = require('axios');
 const _ = require('lodash');
+const adiulay = require('./views/javascript/functions.js');
 const port = process.env.PORT || 8080;
 
 var app = express();

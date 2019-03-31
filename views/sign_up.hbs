@@ -7,42 +7,81 @@
     </head>
     <body>
         <h2>{{> header}}</h2>
-        <form action="/action_page.php" style="border:1px solid #ccc">
+        <form style="border:1px solid #ccc">
             <div class="container">
+                <label><b>First Name</b></label>
+                <input id="first_name" type="text" placeholder="Enter First Name" name="first_name" required>
+                <br>
+
+                <label><b>Last Name</b></label>
+                <input id="last_name" type="text" placeholder="Enter Last Name" name="last_name" required>
+                <br>
+
                 <label><b>Email</b></label>
-                <input type="text" placeholder="Enter Email" name="email" required>
+                <input id="email" type="text" placeholder="Enter Email" name="email" required>
+                <br>
 
                 <label><b>Password</b></label>
-                <input type="password" placeholder="Enter Password" name="psw" required>
+                <input id="password" type="password" placeholder="Enter Password" name="psw" required>
+                <br>
 
                 <label><b>Repeat Password</b></label>
-                <input type="password" placeholder="Repeat Password" name="psw-repeat" required>
-                <input type="checkbox" checked="checked"> Remember me
+                <input id="repeat_password" type="password" placeholder="Repeat Password" name="psw-repeat" required>
+                <br>
 
-                <label><b>Country</b></label>
+                <button onclick="myFunction()">Sign Up</button>
+                <!--<input type="checkbox" checked="checked"> Remember me-->
 
-                <div class="clearfix">
-                    <button type="button" class="cancelbtn">Cancel</button>
-                    <button type="submit" class="signupbtn">Sign Up</button>
-                </div>
+                <!--<label><b>Country</b></label>-->
+
+                <!--<div class="clearfix">-->
+                    <!--<button type="button" class="cancelbtn">Cancel</button>-->
+                    <!--<button type="submit" class="signupbtn">Sign Up</button>-->
+                <!--</div>-->
             </div>
         </form>
 
-        Name: <input type="text" id="myText" value="">
-
         <p>Click the button to change the value of the text field.</p>
 
-        <button onclick="myFunction()">Try it</button>
+        <button onclick="myFunction()">Sign Up</button>
+        <button onclick="alertbox()">alert</button>
 
         <p id="output"></p>
+        <p id="alert"></p>
 
-        <script>
 
-            function myFunction() {
-                var testing = document.getElementById("myText").value;
-                document.getElementById("output").innerHTML = testing;
-            }
-        </script>
+        <!--<script src="javascript/functions.js">-->
+
+            <!--// function myFunction() {-->
+            <!--//     var first_name = document.getElementById("first_name").value;-->
+            <!--//     var last_name = document.getElementById("last_name").value;-->
+            <!--//     var email = document.getElementById("email").value;-->
+            <!--//     var password = document.getElementById("password").value;-->
+            <!--//     var repeat_password = document.getElementById("repeat_password").value;-->
+            <!--//-->
+            <!--//     if (password !== repeat_password) {-->
+            <!--//         alert('Password input does not match.')-->
+            <!--//     } else {-->
+            <!--//         alert('it matches!')-->
+            <!--//     }-->
+            <!--//-->
+            <!--//     // document.getElementById("output").innerHTML = `${first_name} ${last_name} ${email} ${password} ${repeat_password}`;-->
+            <!--// }-->
+            <!--//-->
+            <!--// function alertbox(){-->
+            <!--//     var first_name = document.getElementById("first_name").value;-->
+            <!--//     var last_name = document.getElementById("last_name").value;-->
+            <!--//     var email = document.getElementById("email").value;-->
+            <!--//     var password = document.getElementById("password").value;-->
+            <!--//     var repeat_password = document.getElementById("repeat_password").value;-->
+            <!--//     document.getElementById("alert").innerHTML = alert(`${first_name} ${last_name} ${email} ${password} ${repeat_password}`)-->
+            <!--// }-->
+        <!--</script>-->
+
+        <script type="text/javascript" src='javascript/functions.js'></script>
+
+        <!--<script src="javascript/functions.js"></script>-->
+
 
     </body>
 </html>
