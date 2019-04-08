@@ -7,6 +7,7 @@ const port = process.env.PORT || 8080;
 const fs = require('fs');
 
 var authentication = false;
+var user = 'guest';
 
 const note = require('./javascript/note.js');
 
@@ -15,7 +16,7 @@ hbs.registerPartials(__dirname + '/views/partials');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
-    extended: false
+    extended: true
 }));
 
 app.set('views', __dirname + '/views');
@@ -24,7 +25,9 @@ app.set('view engine', 'hbs');
 app.get('/', (request, response) => {
     response.render('index.hbs', {
         title_page: 'Official Front Page',
-        header: 'Fight Simulator'
+        header: 'Fight Simulator',
+        welcome: `Welcome ${user}`,
+        username: user
     })
 });
 
@@ -36,7 +39,8 @@ app.get('/logout', (request, response) => {
 app.get('/login', (request, response) => {
     response.render('login.hbs', {
         title_page: 'Login Page',
-        header: 'Fight Simulator'
+        header: 'Fight Simulator',
+        username: user
     })
 });
 
@@ -51,24 +55,29 @@ app.post('/user_logging_in', (request, response) => {
 
     if (output === 'Success!') {
         authentication = true;
-        response.render('account.hbs', {
-            title_page: 'Account Page',
-            header: 'Fight Simulator',
-            output: `${output}`
-        })
+        user = email;
+        response.redirect('/')
+        // response.render('account.hbs', {
+        //     title_page: 'Account Page',
+        //     header: 'Fight Simulator',
+        //     output: `${output}`
+        // })
     } else {
         response.render('login.hbs', {
             title_page: 'Account Page',
             header: 'Fight Simulator',
+            username: user,
             output: `${output}`
         })
+        // response.redirect('/')
     }
 });
 
 app.get('/sign_up', (request, response) => {
     response.render('sign_up.hbs', {
         title_page: 'Sign Up Form',
-        header: 'Registration Form'
+        header: 'Registration Form',
+        username: user
     })
 });
 
@@ -89,6 +98,7 @@ app.post('/insert', (request, response) => {
     response.render('sign_up.hbs', {
         title_page: 'Sign Up Form',
         header: 'Registration Form',
+        username: user,
         output_error: `${output}`
     })
 
@@ -105,7 +115,8 @@ app.get('/character', (request, response) => {
     } else {
         response.render('character.hbs', {
             title_page: 'My Character Page',
-            header: 'IT\'S TIME TO D-D-D-DUEL!'
+            header: 'IT\'S TIME TO D-D-D-DUEL!',
+            username: user
         })
     }
 });
@@ -118,7 +129,8 @@ app.get('/account', (request, response) => {
     } else {
         response.render('account.hbs', {
             title_page: 'My Account Page',
-            header: 'IT\'S TIME TO D-D-D-DUEL!'
+            header: 'IT\'S TIME TO D-D-D-DUEL!',
+            username: user
         })
     }
 });
