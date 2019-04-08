@@ -7,7 +7,7 @@ const port = process.env.PORT || 8080;
 const fs = require('fs');
 
 var authentication = false;
-var user = 'guest';
+var user = 'Characters';
 
 const user_db = require('./javascript/user_db.js');
 
@@ -33,6 +33,7 @@ app.get('/', (request, response) => {
 
 app.get('/logout', (request, response) => {
     authentication = false;
+    user = 'Characters';
     response.redirect('/');
 });
 
@@ -115,8 +116,11 @@ app.get('/character', (request, response) => {
     } else {
         response.render('character.hbs', {
             title_page: 'My Character Page',
-            header: 'IT\'S TIME TO D-D-D-DUEL!',
-            username: user
+            header: 'Character Stats',
+            username: user,
+            character_name: 'test_name',
+            character_health: 'test_health',
+            character_dps: 'test_dps'
         })
     }
 });
