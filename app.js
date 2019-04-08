@@ -9,7 +9,7 @@ const fs = require('fs');
 var authentication = false;
 var user = 'guest';
 
-const note = require('./javascript/note.js');
+const user_db = require('./javascript/user_db.js');
 
 var app = express();
 hbs.registerPartials(__dirname + '/views/partials');
@@ -51,7 +51,7 @@ app.post('/user_logging_in', (request, response) => {
 
     // console.log(note.login_check(email, password));
 
-    var output = note.login_check(email, password);
+    var output = user_db.login_check(email, password);
 
     if (output === 'Success!') {
         authentication = true;
@@ -91,7 +91,7 @@ app.post('/insert', (request, response) => {
     var password = request.body.password;
     var password_repeat = request.body.password_repeat;
 
-    var output = note.add_new_user(first_name, last_name, email, password, password_repeat);
+    var output = user_db.add_new_user(first_name, last_name, email, password, password_repeat);
 
     // response.send(`${first_name1} ${last_name1} ${password1}`)
 
