@@ -63,4 +63,4 @@ typings/
 # jimmy was here
 .idea/
 
-.mongo-data/
+mongo-data/
