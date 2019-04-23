@@ -10,5 +10,35 @@
     "Last_Name": "asdfasdf",
     "Email_Address": "asdf@gmail.com",
     "Password": "asdfasdf"
+  },
+  "masterkai56@gmail.com": {
+    "First_Name": "Alex",
+    "Last_Name": "Cho",
+    "Email_Address": "masterkai56@gmail.com",
+    "Password": "alslalsl123"
+  },
+  "asd@gmail.com": {
+    "First_Name": "Jimmy",
+    "Last_Name": "Truong",
+    "Email_Address": "asd@gmail.com",
+    "Password": "alslalsl123"
+  },
+  "Cookie@gmail.com": {
+    "First_Name": "Cookie",
+    "Last_Name": "Cookie",
+    "Email_Address": "Cookie@gmail.com",
+    "Password": "alslalsl123"
+  },
+  "joey@gmail.com": {
+    "First_Name": "Joey",
+    "Last_Name": "Gotengo",
+    "Email_Address": "joey@gmail.com",
+    "Password": "alslalsl123"
+  },
+  "testemail@gmail.com": {
+    "First_Name": "Justin",
+    "Last_Name": "tran",
+    "Email_Address": "testemail@gmail.com",
+    "Password": "12345678"
   }
 }

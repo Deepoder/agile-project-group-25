@@ -11,9 +11,39 @@
     <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
 </head>
 <body class="background">
-    {{>header}}
 
-    <h1>{{output_error}}</h1>
+    {{> nav_bar_non}}
+    <h1>{{> header}}</h1>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6 lightbox">
+                <b>{{character_name}}</b>
+                <p id="jimmy">{{health_player}}</p>
+                <p id="dps_player">{{dps_player}}</p>
+                <p id="new_health_player"></p>
+
+                <br><br>
+
+                <b>{{enemy_name}}</b>
+                <p id="health_enemy">{{health_enemy}}</p>
+                <p id="dps_enemy">{{dps_enemy}}</p>
+
+                <br><br>
+                <form method="get" action="/fight/update_stats">
+                    <button type="submit">Fight!</button>
+                </form>
+                <a href="/character">Back to Characters</a>
+
+                <br>
+                <b>{{outcome}}</b>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+    </div>
+
+    {{welcome}}
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

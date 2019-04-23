@@ -53,7 +53,14 @@ var login_check = (email, password) => {
     }
 };
 
+var email_get = (email) => {
+    if (email in userObject) {
+        return userObject[`${email}`].Email_Address
+    }
+};
+
 module.exports = {
     add_new_user: add_new_user,
-    login_check: login_check
+    login_check: login_check,
+    email_get: email_get
 };

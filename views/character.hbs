@@ -3,20 +3,44 @@
     <head>
         <meta charset="UTF-8">
         <title>{{title_page}}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+        <link rel="stylesheet" href="StyleSheet/StyleSheet.css">
+        <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
     </head>
-    <body>
-        {{> header}}
-        {{> navigation_bar}}
+    <body class="background">
 
-        <a href="/character_creation">Create new Character</a>
-        <br>
-        <a href="/fight">Go Fighting</a>
-        <br>
-        <a href="/delete">Delete Character</a>
-        <br>
+            {{> header}}
+            {{> nav_bar_char}}
 
-        <h1>Character Page</h1>
-        {{> character_stats}}
-        {{> back_button}}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4 lightbox">
+                    <h1>Character Page</h1>
+                    <a href="/character_creation">Create new Character</a>
+                    <br>
+                    <a href="/fight">Go Fighting</a>
+                    <br>
+                    <a href="/update_name">Update Character Name</a>
+                    <br>
+
+                    <h1>Character Page</h1>
+                    {{> character_stats}}
+                    {{> back_button}}
+                    <form method="POST" action="/delete">
+                        <input type="submit" value="Delete Existing Character">
+                    </form>
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     </body>
 </html>
