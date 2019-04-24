@@ -9,6 +9,8 @@ const fs = require('fs');
 var authentication = false;
 var user = 'Characters';
 
+const database = require('./javascript/database.js')
+
 const user_db = require('./javascript/user_db.js');
 const character_db = require('./javascript/character_db.js');
 const fight = require('./javascript/fighting_saves');
@@ -62,18 +64,22 @@ app.get('/index_b', (request, response) => {
     })
 });
 
-app.post('/user_logging_in', (request, response) => {
-    var email = request.body.email;
-    var password = request.body.password;
-    var output = user_db.login_check(email, password);
+app.post('/user_logging_in', async (request, response) => {
 
-    if (output === 'Success!') {
+    var email_entry = request.body.email;
+    var password_entry = request.body.password;
+
+    // var output_entry = user_db.login_check(email, password);
+
+    var db = database.getDb();
+    var account = await db.collection('accounts').find({email: email_entry}).toArray()
+
+    if (account.length == 1) {
         authentication = true;
-        user = email;
+        user = email_entry;
         response.redirect('/index_b')
     } else {
-        response.redirect('/', {
-        })
+        response.redirect('/')
     }
 });
 
@@ -85,123 +91,104 @@ app.get('/sign_up', (request, response) => {
     })
 });
 
-app.post('/insert', (request, response) => {
-    var first_name = request.body.first_name;
-    var last_name = request.body.last_name;
-    var email = request.body.email;
-    var password = request.body.password;
-    var password_repeat = request.body.password_repeat;
-
-    var output = user_db.add_new_user(first_name, last_name, email, password, password_repeat);
-
+app.post('/insert', async (request, response) => {
+    var db = database.getDb();
+    var output = ""
+    var existing_account = await db.collection('accounts').find({email: request.body.email_entry}).toArray()
+    if (existing_account.length == 1) {
+        var output = "Account already exists with that email"
+    } else {
+        db.collection('accounts').insertOne({
+            first_name: request.body.first_name_entry,
+            last_name: request.body.last_name_entry,
+            email: request.body.email_entry,
+            password: request.body.password_entry
+        })
+        var output = "Account successfully created"
+    }
     response.render('sign_up.hbs', {
         title_page: 'Sign Up Form',
         header: 'Registration Form',
         username: user,
-        output_error: `${output}`
+        output_msg: `${output}`
     })
 });
 
-app.get('/character', (request, response) => {
+app.get('/character', async (request, response) => {
     if (authentication === false) {
         response.redirect('/')
     } else {
-        var db = character_db.getDb();
-        db.collection('Character').find({email: user}).toArray((err, item) => {
-            if (err) {
-                console.log(err)
-            } else {
-                try {
-                    var character_name = item[0].character_name;
-                    var health = item[0].health;
-                    var dps = item[0].dps;
-
-                    response.render('character.hbs', {
-                        title_page: 'My Character Page',
-                        header: 'Character Stats',
-                        username: user,
-                        character_name: `${character_name}`,
-                        character_health: `${health}`,
-                        character_dps: `${dps}`
-                    })
-                } catch (e) {
-                    response.render('character.hbs', {
-                        title_page: 'My Character Page',
-                        header: 'Character Stats',
-                        username: user,
-                        character_name: 'CREATE CHARACTER NOW',
-                        character_health: 'CREATE CHARACTER NOW',
-                        character_dps: 'CREATE CHARACTER NOW'
-                    })
-                }
-            }
-        });
+        var db = database.getDb()
+        var account = await db.collection('accounts').find({email: user}).toArray()
+        if (account[0].characters === undefined) {
+            response.render('character.hbs', {
+                title_page: 'My Character Page',
+                header: 'Character Stats',
+                username: user,
+                character_name: 'CREATE CHARACTER NOW',
+                character_health: 'CREATE CHARACTER NOW',
+                character_dps: 'CREATE CHARACTER NOW'
+            })
+        } else {
+            var character_name = account[0].characters[0].character_name;
+            var health = account[0].characters[0].health;
+            var dps = account[0].characters[0].attack;
+            response.render('character.hbs', {
+                title_page: 'My Character Page',
+                header: 'Character Stats',
+                username: user,
+                character_name: `${character_name}`,
+                character_health: `${health}`,
+                character_dps: `${dps}`
+            })
+        }
     }
 });
 
-app.get('/character_creation', (request, response) => {
+app.get('/character_creation', async (request, response) => {
     if (authentication === false) {
         response.redirect('/')
     } else {
-        var db = character_db.getDb();
-
-        db.collection('Character').find({email: user}).toArray((err, items) => {
-            if (err) {
-                response.send(`alert('Cannot find it')`)
-            } else {
-                try {
-                    if (items[0].email === user) {
-                        output = "You already have a character ready for battle!";
-                        response.render('character_creation.hbs', {
-                            title_page: 'Character Creation',
-                            header: 'Create Character',
-                            username: user,
-                            output_error: `${output}`
-                        })
-                    }
-                } catch (e) {
-                    output = "Create a character now!";
+        var db = database.getDb();
+        var account = await db.collection('accounts').find({email: user}).toArray((error, item) => {
+            try {
+                if (item[0].character == undefined) {
+                    var output = "Create a character now!";
                     response.render('character_creation.hbs', {
                         title_page: 'Character Creation',
-                        header: 'Create Character',
+                        username: user,
+                        output_error: `${output}`
+                    })
+                } else {
+                    var output = "You already have an existing character!"
+                    response.render('character_creation.hbs', {
+                        title_page: 'Character Creation',
                         username: user,
                         output_error: `${output}`
                     })
                 }
+            } catch (error) {
+                console.log(error)
             }
-        });
+        })
     }
 });
 
-app.post('/create_character', (request, response) => {
+app.post('/create_character', async (request, response) => {
     var character_name = request.body.character_name;
-    var db = character_db.getDb();
-
-    db.collection('Character').find({email: user}).toArray( (err, item) => {
-        if (err) {
-            response.send('Unable to get all students')
-        } else {
-            try {
-                if(item[0].email === user) {
-                    response.redirect('/character_creation')
-                }
-            } catch (e) {
-                db.collection('Character').insertOne({
+    var db = database.getDb();
+    var account = await db.collection('accounts').find({email:user}).toArray()
+    if (account[0].characters.length == 0){
+        db.collection('accounts').updateOne({email: user}, {"$push":{
+                "characters": {
                     character_name: character_name,
-                    email: user,
                     health: 10,
-                    dps: 6,
-                    win: 0,
-                    lose: 0
-                }, (err, result) => {
-                    if (err) {
-                        response.send('Unable to insert stats');
-                    }
-                    response.redirect('/character')
-                });
-            }
-        }
-    });
+                    attack: 5
+                }
+            }})
+    } else {
+        console.log("Not Implemented Yet")
+    }
 });
 
 
@@ -380,7 +367,7 @@ app.get('/fight/update_stats', (request, response) => {
 
 app.post('/update', (request, response) => {
     var db = character_db.getDb();
-    db.collection('Character').updateOne({email:user},{'$set': {'character_name': request.body.new_name}});
+    db.collection('accounts').updateOne({email:user},{'$set': {'character_name': request.body.new_name}});
     response.redirect('/character')
 });
 
@@ -394,7 +381,7 @@ app.get('/update_name', (request, response) => {
 
 app.post('/delete', (request, response) => {
     var db = character_db.getDb();
-    db.collection('Character').deleteOne({email:user}, (err, items) => {
+    db.collection('accounts').deleteOne({email:user}, (err, items) => {
         console.log(items)
     });
     response.redirect("/character")
@@ -402,5 +389,5 @@ app.post('/delete', (request, response) => {
 
 app.listen(port, () => {
     console.log(`Server is up on the port ${port}`);
-    character_db.init();
+    database.init();
 });

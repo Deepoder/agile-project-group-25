@@ -40,5 +40,12 @@
     "Last_Name": "tran",
     "Email_Address": "testemail@gmail.com",
     "Password": "12345678"
-  }
+  },
+  "testaccount@gmail.com": {
+    "First_Name": "First",
+    "Last_Name": "Last",
+    "Email_Address": "testaccount@gmail.com",
+    "Password": "12345678"
+  },
+  "undefined": {}
 }
