@@ -152,19 +152,17 @@ app.get('/character_creation', async (request, response) => {
         var db = database.getDb();
         var account = await db.collection('accounts').find({email: user}).toArray((error, item) => {
             try {
-                if (item[0].character == undefined) {
-                    var output = "Create a character now!";
+                if (item[0].characters === undefined) {
                     response.render('character_creation.hbs', {
                         title_page: 'Character Creation',
                         username: user,
-                        output_error: `${output}`
+                        output: "Create a new character!"
                     })
                 } else {
-                    var output = "You already have an existing character!"
                     response.render('character_creation.hbs', {
                         title_page: 'Character Creation',
                         username: user,
-                        output_error: `${output}`
+                        output: "You already have an existing character"
                     })
                 }
             } catch (error) {
@@ -178,7 +176,7 @@ app.post('/create_character', async (request, response) => {
     var character_name = request.body.character_name;
     var db = database.getDb();
     var account = await db.collection('accounts').find({email:user}).toArray()
-    if (account[0].characters.length == 0){
+    if (account[0].characters === undefined){
         db.collection('accounts').updateOne({email: user}, {"$push":{
                 "characters": {
                     character_name: character_name,
@@ -366,8 +364,8 @@ app.get('/fight/update_stats', (request, response) => {
 });
 
 app.post('/update', (request, response) => {
-    var db = character_db.getDb();
-    db.collection('accounts').updateOne({email:user},{'$set': {'character_name': request.body.new_name}});
+    var db = database.getDb();
+    db.collection('accounts').update({email:user},{'$set': {"characters.0.character_name": request.body.new_name}});
     response.redirect('/character')
 });
 
@@ -379,11 +377,9 @@ app.get('/update_name', (request, response) => {
     })
 });
 
-app.post('/delete', (request, response) => {
-    var db = character_db.getDb();
-    db.collection('accounts').deleteOne({email:user}, (err, items) => {
-        console.log(items)
-    });
+app.post('/delete', async (request, response) => {
+    var db = database.getDb();
+    db.collection('accounts').updateOne({email:user}, {$pull: "characters.0"})
     response.redirect("/character")
 });
 
