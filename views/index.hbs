@@ -12,41 +12,11 @@
     </head>
 
     <body class="background">
-
-        {{> header}}
-
-        {{> navigation_bar}}
-
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 lightbox">
-                    <h1>Fighting Game</h1>
-                    {{>description}}
-                </div>
-                <div class="col-md-4"></div>
-                <div class="col-md-4 lightbox">
-                    <h1>Fighting Game</h1>
-                    <form method="POST" action="/user_logging_in">
-                        <div class="container">
-                            <label for="uname"><b>Username</b></label>
-                            <input type="text" placeholder="Enter Email" name="email" required>
-
-                            <label for="psw"><b>Password</b></label>
-                            <input type="password" placeholder="Enter Password" name="password" required>
-
-                            <input type="submit" value="Login">
-                            <br><br>
-                            <a href="sign_up">Sign Up</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        {{output}}
-
-        {{welcome}}
-
+        {{# if condition}}
+            {{> valid_account}}
+        {{else}}
+            {{> invalid_account}}
+        {{/if}}
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
