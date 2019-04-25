@@ -28,7 +28,7 @@ app.set('view engine', 'hbs');
 
 app.use(express.static(__dirname + '/views'));
 
-app.get('/index', (request, response) => {
+app.get('/', (request, response) => {
     var condition = false;
     if (authentication === true) {
         var condition = true;
@@ -71,17 +71,15 @@ app.post('/user_logging_in', async (request, response) => {
     var email_entry = request.body.email;
     var password_entry = request.body.password;
 
-    // var output_entry = user_db.login_check(email, password);
-
     var db = database.getDb();
     var account = await db.collection('accounts').find({email: email_entry}).toArray()
 
     if (account.length == 1) {
         authentication = true;
         user = email_entry;
-        response.redirect('/index')
+        response.redirect('/')
     } else {
-        response.redirect('/index')
+        response.redirect('/')
     }
 });
 
@@ -118,7 +116,7 @@ app.post('/insert', async (request, response) => {
 
 app.get('/character', async (request, response) => {
     if (authentication === false) {
-        response.redirect('/index')
+        response.redirect('/')
     } else {
         var db = database.getDb()
         var account = await db.collection('accounts').find({email: user}).toArray()
@@ -149,7 +147,7 @@ app.get('/character', async (request, response) => {
 
 app.get('/character_creation', async (request, response) => {
     if (authentication === false) {
-        response.redirect('/index')
+        response.redirect('/')
     } else {
         var db = database.getDb();
         var account = await db.collection('accounts').find({email: user}).toArray((error, item) => {
@@ -208,7 +206,7 @@ app.post('/character_creation', async (request, response) => {
 app.get('/account', (request, response) => {
 
     if (authentication === false) {
-        response.redirect('/index');
+        response.redirect('/');
     } else {
         database.getDb().collection('accounts').find({email: user}).toArray((err, item) => {
             if (err) {
@@ -234,7 +232,7 @@ app.get('/account', (request, response) => {
 
 app.get('/account_error', (request, response) => {
     if (authentication === false) {
-        response.redirect('/index');
+        response.redirect('/');
     } else {
         response.render('account_error.hbs',{
             email: user,
@@ -247,7 +245,7 @@ app.get('/fight', (request, response) => {
     var outcome = 'Win';
 
     if (authentication === false) {
-        response.redirect('/index');
+        response.redirect('/');
     } else {
         // console.log(response.body);
         var db = database.getDb();
@@ -288,7 +286,7 @@ app.get('/fight', (request, response) => {
 
 app.get('/fight/update_stats', (request, response) => {
     if (authentication === false) {
-        response.redirect('/index')
+        response.redirect('/')
     } else {
         var arena_stats = fight.get_info(); //This is a dictionary
 
