@@ -93,9 +93,8 @@ app.get('/sign_up', (request, response) => {
 
 app.post('/insert', async (request, response) => {
     var db = database.getDb();
-    var output = ""
-    var existing_account = await db.collection('accounts').find({email: request.body.email_entry}).toArray()
-    if (existing_account.length == 1) {
+    var existing_account = await db.collection('accounts').find({email: request.body.email_entry}).toArray();
+    if (existing_account.length === 1) {
         var output = "Account already exists with that email"
     } else {
         db.collection('accounts').insertOne({
@@ -103,8 +102,8 @@ app.post('/insert', async (request, response) => {
             last_name: request.body.last_name_entry,
             email: request.body.email_entry,
             password: request.body.password_entry
-        })
-        var output = "Account successfully created"
+        });
+        output = "Account successfully created"
     }
     response.render('sign_up.hbs', {
         title_page: 'Sign Up Form',
@@ -118,7 +117,7 @@ app.get('/character', async (request, response) => {
     if (authentication === false) {
         response.redirect('/')
     } else {
-        var db = database.getDb()
+        var db = database.getDb();
         var account = await db.collection('accounts').find({email: user}).toArray()
         if (account[0].characters === undefined || account[0].characters.length === 0) {
             response.render('character.hbs', {
@@ -150,7 +149,7 @@ app.get('/character_creation', async (request, response) => {
         response.redirect('/')
     } else {
         var db = database.getDb();
-        var account = await db.collection('accounts').find({email: user}).toArray((error, item) => {
+        db.collection('accounts').find({email: user}).toArray((error, item) => {
             try {
                 if (item[0].characters === undefined || item[0].characters.length === 0) {
                     response.render('character_creation.hbs', {
@@ -177,7 +176,7 @@ app.get('/character_creation', async (request, response) => {
 app.post('/character_creation', async (request, response) => {
 
     var db = database.getDb();
-    var account = await db.collection('accounts').find({email:user}).toArray()
+    var account = await db.collection('accounts').find({email:user}).toArray();
 
     if (account[0].characters === undefined || account[0].characters.length === 0){
         db.collection('accounts').updateOne({email: user}, {"$push":{
@@ -189,7 +188,7 @@ app.post('/character_creation', async (request, response) => {
                     losses: 0
                 }
             }
-        })
+        });
 
         response.render('character_creation.hbs', {
             title_page: 'Character Creation',
@@ -203,51 +202,34 @@ app.post('/character_creation', async (request, response) => {
 });
 
 
-app.get('/account', (request, response) => {
-
-    if (authentication === false) {
-        response.redirect('/');
+app.get('/account', async (request, response) => {
+    if (authentication === false){
+        response.redirect('/')
     } else {
-        database.getDb().collection('accounts').find({email: user}).toArray((err, item) => {
-            if (err) {
-                console.log(err);
+        var db = database.getDb();
+        db.collection('accounts').find({email:user}).toArray((error, item) => {
+            console.log(item);
+            if (item[0].characters === undefined || item[0].characters.length === 0) {
+                response.render('account.hbs', {
+                    email: user,
+                    condition: false
+                })
             } else {
-                try {
-                    var win = item[0].characters[0].wins;
-                    var loses = item[0].characters[0].losses;
-                    var user = item[0].email;
-                    response.render('account.hbs', {
-                        win: win,
-                        losses: loses,
-                        email: user,
-                        header: 'Account'
-                    })
-                } catch {
-                    response.redirect("/account_error");
-                }
+                response.render('account.hbs', {
+                    wins: item[0].characters[0].wins,
+                    losses: item[0].characters[0].losses,
+                    email: user,
+                    condition: true
+                })
             }
-        });
-    }
-});
-
-app.get('/account_error', (request, response) => {
-    if (authentication === false) {
-        response.redirect('/');
-    } else {
-        response.render('account_error.hbs',{
-            email: user,
-            header: 'Account'
         })
     }
 });
 
 app.get('/fight', (request, response) => {
-    var outcome = 'Win';
-
     if (authentication === false) {
         response.redirect('/');
     } else {
-        // console.log(response.body);
         var db = database.getDb();
         db.collection('accounts').find({email: user}).toArray( (err, item) => {
             if (err) {
@@ -386,7 +368,7 @@ app.get('/update_name', (request, response) => {
 
 app.post('/delete', async (request, response) => {
     var db = database.getDb();
-    db.collection('accounts').updateOne({email:user}, {$pop: {"characters": 1}})
+    db.collection('accounts').updateOne({email:user}, {$pop: {"characters": 1}});
     response.redirect("/character")
 });
 
