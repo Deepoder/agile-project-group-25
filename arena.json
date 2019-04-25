@@ -1,7 +1,7 @@
 {
-  "player_name": "Test",
-  "player_health": 6,
-  "player_dps": 6,
-  "enemy_health": -1,
-  "enemy_dps": 4
+  "player_name": "Justin",
+  "player_health": 7,
+  "player_dps": 5,
+  "enemy_health": 3,
+  "enemy_dps": 3
 }

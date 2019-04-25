@@ -120,7 +120,7 @@ app.get('/character', async (request, response) => {
     } else {
         var db = database.getDb()
         var account = await db.collection('accounts').find({email: user}).toArray()
-        if (account[0].characters === undefined) {
+        if (account[0].characters === undefined || account[0].characters.length === 0) {
             response.render('character.hbs', {
                 title_page: 'My Character Page',
                 header: 'Character Stats',
@@ -152,7 +152,7 @@ app.get('/character_creation', async (request, response) => {
         var db = database.getDb();
         var account = await db.collection('accounts').find({email: user}).toArray((error, item) => {
             try {
-                if (item[0].characters === undefined) {
+                if (item[0].characters === undefined || item[0].characters.length === 0) {
                     response.render('character_creation.hbs', {
                         title_page: 'Character Creation',
                         username: user,
@@ -172,18 +172,25 @@ app.get('/character_creation', async (request, response) => {
     }
 });
 
-app.post('/create_character', async (request, response) => {
+app.post('/character_creation', async (request, response) => {
     var character_name = request.body.character_name;
     var db = database.getDb();
     var account = await db.collection('accounts').find({email:user}).toArray()
-    if (account[0].characters === undefined){
+    if (account[0].characters === undefined || account[0].characters.length === 0){
         db.collection('accounts').updateOne({email: user}, {"$push":{
                 "characters": {
                     character_name: character_name,
                     health: 10,
-                    attack: 5
+                    attack: 5,
+                    wins: 0,
+                    losses: 0
                 }
             }})
+        response.render('character_creation.hbs', {
+            title_page: 'Character Creation',
+            username: user,
+            output: "Successfully Created A Character!"
+        })
     } else {
         console.log("Not Implemented Yet")
     }
@@ -194,13 +201,13 @@ app.get('/account', (request, response) => {
     if (authentication === false) {
         response.redirect('/');
     } else {
-        character_db.getDb().collection('Character').find({email: user}).toArray((err, item) => {
+        database.getDb().collection('accounts').find({email: user}).toArray((err, item) => {
             if (err) {
                 console.log(err);
             } else{
                 try {
-                    var win = item[0].win;
-                    var loses = item[0].lose;
+                    var win = item[0].characters[0].wins;
+                    var loses = item[0].characters[0].losses;
                     var user = item[0].email;
                     response.render('account.hbs', {
                         win: win,
@@ -234,16 +241,16 @@ app.get('/fight', (request, response) => {
         response.redirect('/');
     } else {
         // console.log(response.body);
-        var db = character_db.getDb();
-        db.collection('Character').find({email: user}).toArray( (err, item) => {
+        var db = database.getDb();
+        db.collection('accounts').find({email: user}).toArray( (err, item) => {
             if (err) {
                 console.log(err)
             } else {
                 try {
-
-                    var name_player = item[0].character_name;
-                    var health_player = item[0].health;
-                    var dps_player = item[0].dps;
+                    console.log(item[0].characters)
+                    var name_player = item[0].characters[0].character_name;
+                    var health_player = item[0].characters[0].health;
+                    var dps_player = item[0].characters[0].attack;
 
                     var health_enemy = _.random(1, health_player + 5);
                     var dps_enemy = _.random(1, dps_player + 5);
@@ -265,10 +272,7 @@ app.get('/fight', (request, response) => {
                         dps_enemy: `DPS: ${arena_stats.enemy_dps}`
                     })
                 } catch (e) {
-                    response.render('fighting.hbs', {
-                        title_page: 'Error 404',
-                        header: 'Error 404'
-                    })
+                    console.log(e)
                 }
             }
         })
@@ -304,12 +308,12 @@ app.get('/fight/update_stats', (request, response) => {
 
         if (new_player_health <= 0 && new_enemy_health > 0) {
             var db = character_db.getDb();
-            db.collection('Character').find({email: user}).toArray((err, item) => {
+            db.collection('accounts').find({email: user}).toArray((err, item) => {
                 if (err) {
                     console.log(err)
                 } else {
                     var lose = item[0].lose;
-                    db.collection('Character').updateOne({email: user}, {'$set': {'lose': lose + 1}}, (err, item) => {
+                    db.collection('accounts').updateOne({email: user}, {'$set': {'characters.0.losses': lose + 1}}, (err, item) => {
                         if (err) {
                             console.log(err)
                         } else {
@@ -321,14 +325,14 @@ app.get('/fight/update_stats', (request, response) => {
                 }
             })
         } else if (new_enemy_health <= 0 && new_player_health > 0) {
-            character_db.getDb().collection('Character').find({email: user}).toArray((err, item) => {
+            database.getDb().collection('accounts').find({email: user}).toArray((err, item) => {
                 if (err) {
                     console.log(err)
                 } else {
-                    var win = item[0].win;
-                    var health = item[0].health;
-                    var dps = item[0].dps;
-                    character_db.getDb().collection('Character').updateOne({email: user}, {'$set': {'health': health +10, 'dps': dps + 5, 'win': win + 1}}, (err, item) => {
+                    var win = item[0].characters[0].wins;
+                    var health = item[0].characters[0].health;
+                    var dps = item[0].characters[0].attack;
+                    database.getDb().collection('accounts').updateOne({email: user}, {'$set': {'characters.0.health': health +10, 'characters.0.attack': dps + 5, 'characters.0.wins': win + 1}}, (err, item) => {
                         if (err) {
                             console.log(err)
                         } else {
@@ -379,7 +383,7 @@ app.get('/update_name', (request, response) => {
 
 app.post('/delete', async (request, response) => {
     var db = database.getDb();
-    db.collection('accounts').updateOne({email:user}, {$pull: "characters.0"})
+    db.collection('accounts').updateOne({email:user}, {$pop: {"characters": 1}})
     response.redirect("/character")
 });
 
