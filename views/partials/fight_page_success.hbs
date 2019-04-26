@@ -1,0 +1,25 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6 lightbox">
+            <p>{{character_name}}</p>
+            <p>{{character_health}}</p>
+            <p>{{character_attack}}</p>
+            <br><br>
+
+            <b>{{enemy_name}}</b>
+            <p id="health_enemy">{{enemy_health}}</p>
+            <p id="dps_enemy">{{enemy_attack}}</p>
+
+            <br><br>
+            <form method="get" action=''>
+                <button type="submit">Fight!</button>
+            </form>
+            <a href="/character">Back to Characters</a>
+
+            <br>
+            <b>{{outcome}}</b>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+</div>

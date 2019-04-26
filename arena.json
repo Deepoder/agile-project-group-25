@@ -2,6 +2,6 @@
   "player_name": "Test",
   "player_health": 10,
   "player_dps": 5,
-  "enemy_health": 9,
+  "enemy_health": 4,
   "enemy_dps": 4
 }
