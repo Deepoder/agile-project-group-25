@@ -238,22 +238,40 @@ app.get('/fight', async (request, response) => {
         } else {
 
             var foe = functions.findFoe(account[0]);
-            var player = account[0].characters[0];
+            var player = {'character_name': account[0].characters[0].character_name,
+                'max_health': account[0].characters[0].max_health,
+                'current_health': account[0].characters[0].current_health,
+                'attack': account[0].characters[0].attack};
+
+            if (account[0].characters[0].current_battle === undefined) {
+                db.collection('accounts').updateOne({email:user}, {$set: {'characters.0.current_battle': {player, foe}}})
+            }
+
+            var current_battle = account[0].characters[0].current_battle
+
+            console.log(current_battle)
 
             response.render('fighting.hbs', {
                 title: 'Fight!',
-                character_name: `Character Name: ${player.character_name}`,
-                character_health: `Current Health: ${player.current_health}`,
-                character_attack: `Attack: ${player.attack}`,
-                enemy_health: `Enemy Health: ${foe.hp}`,
-                enemy_attack: `Enemy Attack: ${foe.attack}`,
+                character_name: `Character Name: ${current_battle.player.character_name}`,
+                character_health: `Current Health: ${current_battle.player.current_health}`,
+                character_attack: `Attack: ${current_battle.player.attack}`,
+                enemy_health: `Enemy Health: ${current_battle.foe.hp}`,
+                enemy_attack: `Enemy Attack: ${current_battle.foe.attack}`,
                 condition: true,
             })
         }
     }
 });
 
-app.post('/fight/results', (request, response) => {
+app.post('/fight/results', async (request, response) => {
+    var db = database.getDb();
+    var account = await db.collection('accounts').find({email: user}).toArray();
+    var current_battle = account[0].characters[0].current_battle;
+    var player = current_battle.player;
+    var foe = current_battle.foe;
+    console.log(player)
+    console.log(functions.fight(player, foe))
 
 });
 

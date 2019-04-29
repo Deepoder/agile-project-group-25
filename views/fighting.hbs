@@ -29,9 +29,10 @@
                     <p id="dps_enemy">{{enemy_attack}}</p>
 
                     <br><br>
-                    <form method="get" action=''>
-                        <button type="submit">Fight!</button>
+                    <form method="POST" action="/fight/results">
+                        <input type="submit" value="Fight">
                     </form>
+
                     <br>
                     <b>{{output}}</b>
                 {{else}}
