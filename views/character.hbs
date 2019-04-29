@@ -11,15 +11,13 @@
         <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
     </head>
     <body class="background">
-
-            {{> header}}
-            {{> nav_bar_char}}
+    <h1 class="title">{{header}}</h1>
+    {{> nav_bar_char}}
 
         <div class="container">
             <div class="row">
                 <div class="col-md-4"></div>
                 <div class="col-md-4 lightbox">
-                    <h1>Character Page</h1>
                     <a href="/character/creation">Create new Character</a>
                     <br>
                     <a href="/fight">Go Fighting</a>
@@ -27,8 +25,17 @@
                     <a href="/update_name">Update Character Name</a>
                     <br>
 
-                    <h1>Character Page</h1>
-                    {{> character_stats}}
+                    <h1>Character Stats</h1>
+                    <div class="center">
+                        <ul>
+                            <li><strong>Character Name</strong></li>
+                            <li><p>{{character_name}}</p></li>
+                            <li><strong>Max Health</strong></li>
+                            <li><p>{{character_health}}</p></li>
+                            <li><strong>Attack Damage</strong></li>
+                            <li><p>{{character_dps}}</p></li>
+                        </ul>
+                    </div>
                     {{> back_button}}
                     <form method="POST" action="/delete">
                         <input type="submit" value="Delete Existing Character">

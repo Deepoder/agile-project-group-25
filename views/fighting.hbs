@@ -13,13 +13,35 @@
 <body class="background">
 
     {{> nav_bar_non}}
-    <h1>{{> header}}</h1>
-    {{# if condition}}
-        {{> fight_page_success}}
-    {{else}}
-        {{> fight_page_error}}
-    {{/if}}
+    <h1 class="title">{{header}}</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6 lightbox">
+                {{# if condition}}
+                    <p>{{character_name}}</p>
+                    <p>{{character_health}}</p>
+                    <p>{{character_attack}}</p>
+                    <br><br>
 
+                    <b>{{enemy_name}}</b>
+                    <p id="health_enemy">{{enemy_health}}</p>
+                    <p id="dps_enemy">{{enemy_attack}}</p>
+
+                    <br><br>
+                    <form method="get" action=''>
+                        <button type="submit">Fight!</button>
+                    </form>
+                    <br>
+                    <b>{{output}}</b>
+                {{else}}
+                    {{output}}<br>
+                {{/if}}
+                <a href="/character">Back to Characters</a>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+    </div>
     {{welcome}}
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

@@ -12,13 +12,27 @@
     </head>
     <body class="background">
 
-        {{> header}}
+        <h1 class="title">{{header}}</h1>
         {{> nav_bar_account}}
-        {{# if condition}}
-            {{> account_page_success}}
-        {{ else}}
-            {{> account_page_error}}
-        {{/if}}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="lightbox col-md-4">
+                    {{# if condition}}
+                        <label>Email: {{email}}</label><br>
+                        <label>Wins: {{wins}}</label><br>
+                        <label>Losses: {{losses}}</label><br>
+                        {{> back_button}}
+                    {{ else}}
+                        <h1>Account Page</h1><br>
+                        <label>Email: {{email}}</label><br>
+                        <label>Create your character to view your wins and losses</label>
+                        {{> back_button}}
+                    {{/if}}
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+        </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

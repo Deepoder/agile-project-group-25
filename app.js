@@ -1,19 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const hbs = require('hbs');
-const axios = require('axios');
-const _ = require('lodash');
 const port = process.env.PORT || 8080;
-const fs = require('fs');
 
 var authentication = false;
 var user = 'Characters';
 
 const database = require('./javascript/database.js')
-
-const user_db = require('./javascript/user_db.js');
-const character_db = require('./javascript/character_db.js');
-const fight = require('./javascript/fighting_saves');
 const functions = require('./javascript/functions.js')
 
 var app = express();
@@ -23,10 +16,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-
-hbs.registerHelper("fightTest", function(p_health, p_attack, e_health, e_attack){
-    console.log(`P_HP: ${p_health}`)
-});
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'hbs');
@@ -47,20 +36,13 @@ app.get('/', (request, response) => {
         username: user,
         condition: condition
     })
+
 });
 
 app.get('/logout', (request, response) => {
     authentication = false;
     user = 'Characters';
     response.redirect('/');
-});
-
-app.get('/login', (request, response) => {
-    response.render('login.hbs', {
-        title_page: 'Login Page',
-        header: 'Fighting Simulator',
-        username: user
-    })
 });
 
 app.get('/', (request, response) => {
@@ -73,13 +55,13 @@ app.get('/', (request, response) => {
     })
 });
 
-app.post('/', async (request, response) => {
+app.post('/login', async (request, response) => {
 
     var email_entry = request.body.email;
     var password_entry = request.body.password;
 
     var db = database.getDb();
-    var account = await db.collection('accounts').find({email: email_entry}).toArray()
+    var account = await db.collection('accounts').find({email: email_entry}).toArray();
 
     if (account.length === 1 && account[0].password === password_entry) {
         authentication = true;
@@ -105,6 +87,7 @@ app.get('/sign_up', (request, response) => {
 app.post('/insert', async (request, response) => {
     var db = database.getDb();
     var existing_account = await db.collection('accounts').find({email: request.body.email_entry}).toArray();
+
     if (existing_account.length === 1) {
         var output = "Account already exists with that email"
     } else {
@@ -141,7 +124,7 @@ app.get('/character', async (request, response) => {
             })
         } else {
             var character_name = account[0].characters[0].character_name;
-            var health = account[0].characters[0].health;
+            var health = account[0].characters[0].max_health;
             var dps = account[0].characters[0].attack;
             response.render('character.hbs', {
                 title_page: 'My Character Page',
@@ -220,16 +203,17 @@ app.get('/account', async (request, response) => {
     } else {
         var db = database.getDb();
         db.collection('accounts').find({email:user}).toArray((error, item) => {
-            console.log(item);
             if (item[0].characters === undefined || item[0].characters.length === 0) {
                 response.render('account.hbs', {
                     email: user,
+                    header: 'Account',
                     condition: false
                 })
             } else {
                 response.render('account.hbs', {
                     wins: item[0].characters[0].wins,
                     losses: item[0].characters[0].losses,
+                    header: 'Account',
                     email: user,
                     condition: true
                 })
@@ -267,129 +251,11 @@ app.get('/fight', async (request, response) => {
             })
         }
     }
-    // if (authentication === false) {
-    //     response.redirect('/');
-    // } else {
-    //     var db = database.getDb();
-    //     db.collection('accounts').find({email: user}).toArray( (err, item) => {
-    //         if (err) {
-    //             console.log(err)
-    //         } else {
-    //             try {
-    //                 var name_player = item[0].characters[0].character_name;
-    //                 var health_player = item[0].characters[0].health;
-    //                 var dps_player = item[0].characters[0].attack;
-    //
-    //                 var health_enemy = _.random(1, health_player + 5);
-    //                 var dps_enemy = _.random(1, dps_player + 5);
-    //
-    //                 fight.add_info(name_player, health_player, dps_player, health_enemy, dps_enemy);
-    //
-    //                 arena_stats = fight.get_info();
-    //
-    //                 response.render('fighting.hbs', {
-    //                     title_page: `Let's fight!`,
-    //                     header: 'Fight Fight Fight!',
-    //                     username: user,
-    //                     character_name: `${name_player}`,
-    //                     enemy_name: `The Enemy`,
-    //                     health_player: health_player,
-    //                     dps_player: dps_player,
-    //                     dps_enemy: dps_enemy,
-    //                     health_enemy: health_enemy
-    //                 })
-    //             } catch (e) {
-    //                 console.log(e)
-    //             }
-    //         }
-    //     })
-    // }
 });
 
-// app.get('/fight/update_stats', (request, response) => {
-//     if (authentication === false) {
-//         response.redirect('/')
-//     } else {
-//         var arena_stats = fight.get_info(); //This is a dictionary
-//
-//         var player_name = arena_stats.player_name;
-//
-//         var player_health = arena_stats.player_health;
-//         var player_dps = arena_stats.player_dps;
-//
-//         var enemy_health = arena_stats.enemy_health;
-//         var enemy_dps = arena_stats.enemy_dps;
-//
-//         var new_player_health = player_health - enemy_dps;
-//         var new_enemy_health = enemy_health - player_dps;
-//
-//         if (new_player_health > new_enemy_health && new_player_health > 0) {
-//             reply = 'You are winning!'
-//         } else if (new_enemy_health > new_player_health && new_player_health > 0) {
-//             reply = 'Enemy is winning'
-//         }
-//
-//         fight.add_info(player_name, new_player_health, player_dps, new_enemy_health, enemy_dps);
-//
-//         if (new_player_health <= 0 && new_enemy_health > 0) {
-//             var db = character_db.getDb();
-//             db.collection('accounts').find({email: user}).toArray((err, item) => {
-//                 if (err) {
-//                     console.log(err)
-//                 } else {
-//                     var lose = item[0].lose;
-//                     db.collection('accounts').updateOne({email: user}, {'$set': {'characters.0.losses': lose + 1}}, (err, item) => {
-//                         if (err) {
-//                             console.log(err)
-//                         } else {
-//                             response.render('win_lose_page.hbs', {
-//                                 win_lose: `${lose}`
-//                             })
-//                         }
-//                     })
-//                 }
-//             })
-//         } else if (new_enemy_health <= 0 && new_player_health > 0) {
-//             database.getDb().collection('accounts').find({email: user}).toArray((err, item) => {
-//                 if (err) {
-//                     console.log(err)
-//                 } else {
-//                     var win = item[0].characters[0].wins;
-//                     var health = item[0].characters[0].health;
-//                     var dps = item[0].characters[0].attack;
-//                     database.getDb().collection('accounts').updateOne({email: user}, {'$set': {'characters.0.health': health +10, 'characters.0.attack': dps + 5, 'characters.0.wins': win + 1}}, (err, item) => {
-//                         if (err) {
-//                             console.log(err)
-//                         } else {
-//                             var win = 'YOU WIN!';
-//                             response.render('win_lose_page.hbs', {
-//                                 win_lose: `${win}`
-//                             })
-//                         }
-//                     })
-//                 }
-//             })
-//         } else if (new_player_health <= 0 && new_enemy_health <= 0) {
-//             var tie = 'ITS A TIE';
-//             response.render('win_lose_page.hbs', {
-//                 win_lose: `${tie}`
-//             })
-//         } else {
-//             response.render('fighting.hbs', {
-//                 title_page: `Let's fight!`,
-//                 header: 'Fight Fight Fight!',
-//                 username: user,
-//                 character_name: `${player_name}`,
-//                 enemy_name: `The Enemy`,
-//                 health_player: `Health: ${new_player_health}`,
-//                 dps_player: `DPS: ${player_dps}`,
-//                 health_enemy: `Health: ${new_enemy_health}`,
-//                 dps_enemy: `DPS: ${enemy_dps}`,
-//                 outcome: `${reply}`
-//             })
-//         }
-//     }
-// });
+app.post('/fight/results', (request, response) => {
+
+});
 
 app.post('/update', (request, response) => {
     var db = database.getDb();
