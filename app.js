@@ -155,7 +155,7 @@ app.get('/character', async (request, response) => {
     }
 });
 
-app.get('/character_creation', async (request, response) => {
+app.get('/character/creation', async (request, response) => {
     if (authentication === false) {
         response.redirect('/')
     } else {
@@ -184,7 +184,7 @@ app.get('/character_creation', async (request, response) => {
     }
 });
 
-app.post('/character_creation', async (request, response) => {
+app.post('/character/creation', async (request, response) => {
 
     var db = database.getDb();
     var account = await db.collection('accounts').find({email:user}).toArray();
@@ -193,7 +193,8 @@ app.post('/character_creation', async (request, response) => {
         db.collection('accounts').updateOne({email: user}, {"$push":{
                 "characters": {
                     character_name: request.body.character_name,
-                    health: 10,
+                    current_health: 10,
+                    max_health: 10,
                     attack: 5,
                     wins: 0,
                     losses: 0
@@ -251,13 +252,15 @@ app.get('/fight', async (request, response) => {
                 condition: false
             })
         } else {
-            var foe = functions.findFoe(account[0])
-            console.log(foe)
+
+            var foe = functions.findFoe(account[0]);
+            var player = account[0].characters[0];
+
             response.render('fighting.hbs', {
                 title: 'Fight!',
-                character_name: `Character Name: ${account[0].characters[0].character_name}`,
-                character_health: `Current Health: ${account[0].characters[0].health}`,
-                character_attack: `Attack: ${account[0].characters[0].attack}`,
+                character_name: `Character Name: ${player.character_name}`,
+                character_health: `Current Health: ${player.current_health}`,
+                character_attack: `Attack: ${player.attack}`,
                 enemy_health: `Enemy Health: ${foe.hp}`,
                 enemy_attack: `Enemy Attack: ${foe.attack}`,
                 condition: true,
