@@ -43,12 +43,10 @@ var fight = (player, foe) => {
             player.current_health = player.current_health - foe.attack;
             if (player.current_health <= 0){
                 player.current_health = 0;
-                player.losses = player.losses + 1;
             }
         }
         if (foe.hp <= 0) {
             foe.hp = 0;
-            player.wins = player.wins + 1
         }
         return {player, foe}
     }catch(error){

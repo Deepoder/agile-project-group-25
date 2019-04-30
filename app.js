@@ -271,8 +271,22 @@ app.post('/fight/results', async (request, response) => {
     var current_battle = account[0].characters[0].current_battle;
     var player = current_battle.player;
     var foe = current_battle.foe;
-    console.log(player)
-    console.log(functions.fight(player, foe))
+    var fight_result = functions.fight(player, foe)
+    console.log(fight_result.player)
+    player = fight_result.player;
+    foe = fight_result.foe;
+
+    response.render('fighting.hbs', {
+        title: 'Fight!',
+        character_name: `Character Name: ${fight_result.player.character_name}`,
+        character_health: `Current Health: ${fight_result.player.current_health}`,
+        character_attack: `Attack: ${fight_result.player.attack}`,
+        enemy_health: `Enemy Health: ${fight_result.foe.hp}`,
+        enemy_attack: `Enemy Attack: ${fight_result.foe.attack}`,
+        condition: true,
+    })
+
+    db.collection('accounts').updateOne({email:user}, {$set: {'characters.0.current_battle': {player, foe}}})
 
 });
 
