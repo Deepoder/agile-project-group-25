@@ -6,6 +6,20 @@ var findFoe = (Player) => {
     return {name: 'foe', hp: randomHealth, attack: randomAttack}
 };
 
+// var findFoe = (Player) => {
+//     var randomLevel = Math.floor(Math.random()* (Player.characters[0].level - 1) + 1);
+//     var randomAttack = Math.floor(Math.random()* (Player.characters[0].max_health/3) + 1);
+//     var randomHealth = Math.floor(Math.random()* ((Player.characters[0].max_health) - Player.characters[0].attack) + Player.characters[0].attack);
+//     var randomExp = Math.floor(Math.random()* (((Player.characters[0].level + 2) -10) + 10));
+//     return {
+//         name: 'foe',
+//         level: randomLevel,
+//         hp: randomHealth,
+//         attack: randomAttack,
+//         exp: randomExp
+//     }
+// };
+
 var saveFoe = (foe) => {
     var db = database.getDb();
     if (foe.hp <= 0){
@@ -29,12 +43,12 @@ var fight = (player, foe) => {
             player.current_health = player.current_health - foe.attack;
             if (player.current_health <= 0){
                 player.current_health = 0;
-                player.losses += 1;
+                player.losses = player.losses + 1;
             }
         }
         if (foe.hp <= 0) {
             foe.hp = 0;
-            player.wins += 1
+            player.wins = player.wins + 1
         }
         return {player, foe}
     }catch(error){

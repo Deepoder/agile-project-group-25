@@ -6,8 +6,8 @@ const port = process.env.PORT || 8080;
 var authentication = false;
 var user = 'Characters';
 
-const database = require('./javascript/database.js')
-const functions = require('./javascript/functions.js')
+const database = require('./javascript/database.js');
+const functions = require('./javascript/functions.js');
 
 var app = express();
 hbs.registerPartials(__dirname + '/views/partials');
@@ -23,6 +23,7 @@ app.set('view engine', 'hbs');
 app.use(express.static(__dirname + '/views'));
 
 app.get('/', (request, response) => {
+
     var condition = false;
 
     if (authentication === true) {
@@ -36,7 +37,6 @@ app.get('/', (request, response) => {
         username: user,
         condition: condition
     })
-
 });
 
 app.get('/logout', (request, response) => {
@@ -108,6 +108,7 @@ app.post('/insert', async (request, response) => {
 });
 
 app.get('/character', async (request, response) => {
+
     if (authentication === false) {
         response.redirect('/')
     } else {
@@ -184,13 +185,11 @@ app.post('/character/creation', async (request, response) => {
                 }
             }
         });
-
         response.render('character_creation.hbs', {
             title_page: 'Character Creation',
             username: user,
             output: "Successfully Created A Character!"
         })
-
     } else {
         console.log("Not Implemented Yet")
     }
@@ -222,44 +221,46 @@ app.get('/account', async (request, response) => {
     }
 });
 
-app.get('/fight', async (request, response) => {
-    var db = database.getDb();
-    var account = await db.collection('accounts').find({email:user}).toArray();
-
-    if (authentication === false) {
-        response.redirect('/');
+app.get('/fight', (request, response) => {
+    if (authentication === false){
+        response.redirect('/')
     } else {
-        if (account[0].characters === undefined || account[0].characters.length === 0) {
-            response.render('fighting.hbs', {
-                title: 'Fight!',
-                output: 'You do not have a character to fight with!',
-                condition: false
-            })
-        } else {
+        try {
+            var db = database.getDb();
+            db.collection('accounts').find({email:user}).toArray((error, item) => {
+                if (item[0].characters === undefined || item[0].characters.length === 0) {
+                    response.render('fighting.hbs', {
+                        title: 'Fight!',
+                        output: 'You do not have a character to fight with!',
+                        condition: false
+                    })
+                } else {
+                    var foe = functions.findFoe(item[0]);
+                    var player = {'character_name': item[0].characters[0].character_name,
+                        'max_health': item[0].characters[0].max_health,
+                        'current_health': item[0].characters[0].current_health,
+                        'attack': item[0].characters[0].attack
+                    };
+                    db.collection('accounts').updateOne({email:user}, {$set: {'characters.0.current_battle': {player, foe}}},{ upsert: true });
+                }
+                db.collection('accounts').find({email:user}).toArray((error, item) => {
 
-            var foe = functions.findFoe(account[0]);
-            var player = {'character_name': account[0].characters[0].character_name,
-                'max_health': account[0].characters[0].max_health,
-                'current_health': account[0].characters[0].current_health,
-                'attack': account[0].characters[0].attack};
+                    var current_battle = item[0].characters[0].current_battle
 
-            if (account[0].characters[0].current_battle === undefined) {
-                db.collection('accounts').updateOne({email:user}, {$set: {'characters.0.current_battle': {player, foe}}})
-            }
+                    response.render('fighting.hbs', {
+                        title: 'Fight!',
+                        character_name: `Character Name: ${current_battle.player.character_name}`,
+                        character_health: `Current Health: ${current_battle.player.current_health}`,
+                        character_attack: `Attack: ${current_battle.player.attack}`,
+                        enemy_health: `Enemy Health: ${current_battle.foe.hp}`,
+                        enemy_attack: `Enemy Attack: ${current_battle.foe.attack}`,
+                        condition: true,
+                    })
+                })
 
-            var current_battle = account[0].characters[0].current_battle
-
-            console.log(current_battle)
-
-            response.render('fighting.hbs', {
-                title: 'Fight!',
-                character_name: `Character Name: ${current_battle.player.character_name}`,
-                character_health: `Current Health: ${current_battle.player.current_health}`,
-                character_attack: `Attack: ${current_battle.player.attack}`,
-                enemy_health: `Enemy Health: ${current_battle.foe.hp}`,
-                enemy_attack: `Enemy Attack: ${current_battle.foe.attack}`,
-                condition: true,
-            })
+            });
+        } catch (error){
+            console.log(error)
         }
     }
 });
