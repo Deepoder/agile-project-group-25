@@ -23,19 +23,12 @@ app.set('view engine', 'hbs');
 app.use(express.static(__dirname + '/views'));
 
 app.get('/', (request, response) => {
-
-    var condition = false;
-
-    if (authentication === true) {
-        condition = true;
-    }
-
     response.render('index.hbs', {
         title_page: 'Official Front Page',
         header: "Fighting Simulator",
         welcome: `Welcome ${user}`,
         username: user,
-        condition: condition
+        condition: authentication
     })
 });
 
@@ -151,7 +144,8 @@ app.get('/character/creation', async (request, response) => {
                         title_page: 'Character Creation',
                         username: user,
                         output: "Create a new character!",
-                        condition: true
+                        condition: true,
+                        basename: 'characters'
                     })
                 } else {
                     response.render('character_creation.hbs', {
@@ -181,7 +175,9 @@ app.post('/character/creation', async (request, response) => {
                     max_health: 10,
                     attack: 5,
                     wins: 0,
-                    losses: 0
+                    losses: 0,
+                    gold: 0,
+                    level: 1
                 }
             }
         });
@@ -234,30 +230,46 @@ app.get('/fight', (request, response) => {
                         output: 'You do not have a character to fight with!',
                         condition: false
                     })
-                } else {
+                } else if (item[0].characters[0].current_battle === undefined ||
+                    item[0].characters[0].current_battle.player.health <= 0 ||
+                    item[0].characters[0].current_battle.foe.hp <= 0){
                     var foe = functions.findFoe(item[0]);
                     var player = {'character_name': item[0].characters[0].character_name,
                         'max_health': item[0].characters[0].max_health,
                         'current_health': item[0].characters[0].current_health,
-                        'attack': item[0].characters[0].attack
+                        'attack': item[0].characters[0].attack,
+                        'level': item[0].characters[0].level
                     };
-                    db.collection('accounts').updateOne({email:user}, {$set: {'characters.0.current_battle': {player, foe}}},{ upsert: true });
-                }
-                db.collection('accounts').find({email:user}).toArray((error, item) => {
 
-                    var current_battle = item[0].characters[0].current_battle
+                    db.collection('accounts').findOneAndUpdate({email:user},
+                        {$set: {'characters.0.current_battle': {player, foe}}},
+                        {upsert:true, returnNewDocument:true})
 
-                    response.render('fighting.hbs', {
-                        title: 'Fight!',
-                        character_name: `Character Name: ${current_battle.player.character_name}`,
-                        character_health: `Current Health: ${current_battle.player.current_health}`,
-                        character_attack: `Attack: ${current_battle.player.attack}`,
-                        enemy_health: `Enemy Health: ${current_battle.foe.hp}`,
-                        enemy_attack: `Enemy Attack: ${current_battle.foe.attack}`,
-                        condition: true,
+                    db.collection('accounts').find({email:user}).toArray((error, item) => {
+                        response.render('fighting.hbs', {
+                            title: 'Fight!',
+                            character_name: `Character Name: ${item[0].characters[0].current_battle.player.character_name}`,
+                            character_health: `Current Health: ${item[0].characters[0].current_battle.player.current_health}`,
+                            character_attack: `Attack: ${item[0].characters[0].current_battle.player.attack}`,
+                            enemy_health: `Enemy Health: ${item[0].characters[0].current_battle.foe.hp}`,
+                            enemy_attack: `Enemy Attack: ${item[0].characters[0].current_battle.foe.attack}`,
+                            condition: true,
+                        })
                     })
-                })
 
+                } else {
+                    db.collection('accounts').find({email:user}).toArray((error, item) => {
+                        response.render('fighting.hbs', {
+                            title: 'Fight!',
+                            character_name: `Character Name: ${item[0].characters[0].current_battle.player.character_name}`,
+                            character_health: `Current Health: ${item[0].characters[0].current_battle.player.current_health}`,
+                            character_attack: `Attack: ${item[0].characters[0].current_battle.player.attack}`,
+                            enemy_health: `Enemy Health: ${item[0].characters[0].current_battle.foe.hp}`,
+                            enemy_attack: `Enemy Attack: ${item[0].characters[0].current_battle.foe.attack}`,
+                            condition: true,
+                        })
+                    })
+                }
             });
         } catch (error){
             console.log(error)
@@ -265,14 +277,14 @@ app.get('/fight', (request, response) => {
     }
 });
 
-app.post('/fight/results', async (request, response) => {
+app.post('/fight', async (request, response) => {
     var db = database.getDb();
     var account = await db.collection('accounts').find({email: user}).toArray();
     var current_battle = account[0].characters[0].current_battle;
     var player = current_battle.player;
     var foe = current_battle.foe;
     var fight_result = functions.fight(player, foe)
-    console.log(fight_result.player)
+
     player = fight_result.player;
     foe = fight_result.foe;
 
@@ -284,9 +296,10 @@ app.post('/fight/results', async (request, response) => {
         enemy_health: `Enemy Health: ${fight_result.foe.hp}`,
         enemy_attack: `Enemy Attack: ${fight_result.foe.attack}`,
         condition: true,
-    })
+    });
 
     db.collection('accounts').updateOne({email:user}, {$set: {'characters.0.current_battle': {player, foe}}})
+
 
 });
 
