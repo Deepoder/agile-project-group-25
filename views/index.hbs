@@ -10,41 +10,43 @@
         <link rel="stylesheet" href="StyleSheet/StyleSheet.css">
         <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
     </head>
+
     <body class="background">
-    <h1 class="title">{{header}}</h1>
-    {{#if condition}}
-        {{> nav_bar}}
-    {{/if}}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4"></div>
-            <div class="col-md-4 lightbox">
-                {{# if condition}}
-                    {{welcome}}
-                    <p>
-                        Welcome to the Fight Simulator!
-                        Fight against randomly generated enemies and fight!
-                        Defeat enemies to increase your Attack Damage so that you can dominate the fight!
-                    </p>
-                {{else}}
+
+        {{> header}}
+
+        {{> navigation_bar}}
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 lightbox">
                     <h1>Fighting Game</h1>
-                    <form method="POST" action="/login">
-                        <label for="uname"><b>Username</b></label>
-                        <input type="text" placeholder="Enter Email" name="email" required>
+                    {{>description}}
+                </div>
+                <div class="col-md-4"></div>
+                <div class="col-md-4 lightbox">
+                    <h1>Fighting Game</h1>
+                    <form method="POST" action="/user_logging_in">
+                        <div class="container">
+                            <label for="uname"><b>Username</b></label>
+                            <input type="text" placeholder="Enter Email" name="email" required>
 
-                        <label for="psw"><b>Password</b></label>
-                        <input type="password" placeholder="Enter Password" name="password" required>
+                            <label for="psw"><b>Password</b></label>
+                            <input type="password" placeholder="Enter Password" name="password" required>
 
-                        <input type="submit" value="Login">
-                        <br><br>
-                        <a href="sign_up">Sign Up</a><br>
-                        {{output}}
+                            <input type="submit" value="Login">
+                            <br><br>
+                            <a href="sign_up">Sign Up</a>
+                        </div>
                     </form>
-                {{/if}}
+                </div>
             </div>
-            <div class="col-md-4"></div>
         </div>
-    </div>
+
+        {{output}}
+
+        {{welcome}}
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

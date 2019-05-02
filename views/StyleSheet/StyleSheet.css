@@ -2,15 +2,6 @@ nav {
     margin-top: 0;
 }
 
-ul {
-    list-style: none;
-    padding: 0;
-}
-
-.active {
-    color: green;
-}
-
 .background {
     background-image: url("../Images/background.jpg");
     background-attachment: fixed;
