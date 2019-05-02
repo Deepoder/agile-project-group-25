@@ -12,7 +12,7 @@
     </head>
     <body class="background">
     <h1 class="title">{{header}}</h1>
-    {{> nav_bar_non}}
+    {{> nav_bar}}
 
         <div class="container">
             <div class="row">
@@ -24,17 +24,20 @@
                     <br>
                     <a href="/update_name">Update Character Name</a>
                     <br>
-
-                    <h1>Character Stats</h1>
                     <div class="center">
-                        <ul>
-                            <li><strong>Character Name</strong></li>
-                            <li><p>{{character_name}}</p></li>
-                            <li><strong>Max Health</strong></li>
-                            <li><p>{{character_health}}</p></li>
-                            <li><strong>Attack Damage</strong></li>
-                            <li><p>{{character_dps}}</p></li>
-                        </ul>
+                        {{#if condition}}
+                            <h1>Character Stats</h1>
+                            <ul>
+                                <li><strong>Character Name</strong></li>
+                                <li><p>{{character_name}}</p></li>
+                                <li><strong>Max Health</strong></li>
+                                <li><p>{{character_health}}</p></li>
+                                <li><strong>Attack Damage</strong></li>
+                                <li><p>{{character_dps}}</p></li>
+                            </ul>
+                        {{else}}
+                            {{output}}
+                        {{/if}}
                     </div>
                     {{> back_button}}
                     <form method="POST" action="/delete">

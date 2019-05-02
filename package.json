@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --recursive --exit",
     "start": "node app.js"
   },
   "author": "",
@@ -13,12 +13,16 @@
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "express": "^4.16.4",
     "handlebars-helpers": "^0.10.0",
     "hbs": "^4.0.4",
     "init": "^0.1.2",
     "lodash": "^4.17.11",
     "mocha": "^6.1.4",
-    "mongodb": "^3.2.3"
+    "mockgoose": "^8.0.1",
+    "mongodb": "^3.2.3",
+    "mongoose": "^5.5.5",
+    "supertest": "^4.0.2"
   }
 }

@@ -1,12 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const hbs = require('hbs');
+const hbsHelpers = require('handlebars-helpers')
 const port = process.env.PORT || 8080;
 
 var authentication = false;
 var user = 'Characters';
 
-const database = require('./javascript/database.js');
+const database = require('./database/database.js');
 const functions = require('./javascript/functions.js');
 
 var app = express();
@@ -44,7 +45,8 @@ app.get('/', (request, response) => {
         header: 'Fighting Simulator',
         welcome: `Welcome ${user}`,
         username: user,
-        condition: false
+        condition: false,
+        active: {home: true}
     })
 });
 
@@ -61,6 +63,7 @@ app.post('/login', async (request, response) => {
         user = email_entry;
         response.redirect('/')
     } else {
+        response.status(400);
         response.render('index.hbs', {
             condition: false,
             header: 'Fighting Simulator',
@@ -110,11 +113,9 @@ app.get('/character', async (request, response) => {
         if (account[0].characters === undefined || account[0].characters.length === 0) {
             response.render('character.hbs', {
                 title_page: 'My Character Page',
-                header: 'Character Stats',
-                username: user,
-                character_name: 'CREATE CHARACTER NOW',
-                character_health: 'CREATE CHARACTER NOW',
-                character_dps: 'CREATE CHARACTER NOW'
+                output: "You don't have a character! Create one now!",
+                condition: false,
+                active: {character: true}
             })
         } else {
             var character_name = account[0].characters[0].character_name;
@@ -126,7 +127,9 @@ app.get('/character', async (request, response) => {
                 username: user,
                 character_name: `${character_name}`,
                 character_health: `${health}`,
-                character_dps: `${dps}`
+                character_dps: `${dps}`,
+                active: {character: true},
+                condition: true
             })
         }
     }
@@ -202,7 +205,8 @@ app.get('/account', async (request, response) => {
                 response.render('account.hbs', {
                     email: user,
                     header: 'Account',
-                    condition: false
+                    condition: false,
+                    active: {account: true}
                 })
             } else {
                 response.render('account.hbs', {
@@ -210,7 +214,8 @@ app.get('/account', async (request, response) => {
                     losses: item[0].characters[0].losses,
                     header: 'Account',
                     email: user,
-                    condition: true
+                    condition: true,
+                    active: {account: true}
                 })
             }
         })
@@ -228,7 +233,7 @@ app.get('/fight', (request, response) => {
                     response.render('fighting.hbs', {
                         title: 'Fight!',
                         output: 'You do not have a character to fight with!',
-                        condition: false
+                        condition: false,
                     })
                 } else if (item[0].characters[0].current_battle === undefined ||
                     item[0].characters[0].current_battle.player.health <= 0 ||
@@ -243,7 +248,7 @@ app.get('/fight', (request, response) => {
 
                     db.collection('accounts').findOneAndUpdate({email:user},
                         {$set: {'characters.0.current_battle': {player, foe}}},
-                        {upsert:true, returnNewDocument:true})
+                        {upsert:true, new:true})
 
                     db.collection('accounts').find({email:user}).toArray((error, item) => {
                         response.render('fighting.hbs', {
@@ -253,7 +258,7 @@ app.get('/fight', (request, response) => {
                             character_attack: `Attack: ${item[0].characters[0].current_battle.player.attack}`,
                             enemy_health: `Enemy Health: ${item[0].characters[0].current_battle.foe.hp}`,
                             enemy_attack: `Enemy Attack: ${item[0].characters[0].current_battle.foe.attack}`,
-                            condition: true,
+                            condition: true
                         })
                     })
 
@@ -266,7 +271,7 @@ app.get('/fight', (request, response) => {
                             character_attack: `Attack: ${item[0].characters[0].current_battle.player.attack}`,
                             enemy_health: `Enemy Health: ${item[0].characters[0].current_battle.foe.hp}`,
                             enemy_attack: `Enemy Attack: ${item[0].characters[0].current_battle.foe.attack}`,
-                            condition: true,
+                            condition: true
                         })
                     })
                 }
@@ -278,15 +283,18 @@ app.get('/fight', (request, response) => {
 });
 
 app.post('/fight', async (request, response) => {
+
     var db = database.getDb();
     var account = await db.collection('accounts').find({email: user}).toArray();
     var current_battle = account[0].characters[0].current_battle;
     var player = current_battle.player;
     var foe = current_battle.foe;
+
     var fight_result = functions.fight(player, foe)
 
     player = fight_result.player;
     foe = fight_result.foe;
+
 
     response.render('fighting.hbs', {
         title: 'Fight!',
@@ -295,10 +303,11 @@ app.post('/fight', async (request, response) => {
         character_attack: `Attack: ${fight_result.player.attack}`,
         enemy_health: `Enemy Health: ${fight_result.foe.hp}`,
         enemy_attack: `Enemy Attack: ${fight_result.foe.attack}`,
-        condition: true,
+        condition: true
     });
 
     db.collection('accounts').updateOne({email:user}, {$set: {'characters.0.current_battle': {player, foe}}})
+    console.log(account[0].characters[0].current_battle)
 
 
 });
@@ -327,3 +336,5 @@ app.listen(port, () => {
     console.log(`Server is up on the port ${port}`);
     database.init();
 });
+
+module.exports = app;

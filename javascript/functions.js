@@ -1,4 +1,4 @@
-const database = require('./database.js')
+const database = require('../database/database.js')
 
 // var findFoe = (Player) => {
 //     var randomAttack = Math.floor(Math.random()* (Player.characters[0].attack/3) + 1);
@@ -6,19 +6,7 @@ const database = require('./database.js')
 //     return {name: 'foe', hp: randomHealth, attack: randomAttack}
 // };
 
-var test_player = {
-    'characters': [
-        {
-            character_name: "Test",
-            max_health: 10,
-            current_health: 10,
-            attack: 5,
-            level: 1,
-        }
-    ]
-}
-
-    var findFoe = (Player) => {
+var findFoe = (Player) => {
     var randomLevel = Math.floor(Math.random()* (Player.characters[0].level - 1) + 1);
     var randomAttack = Math.floor(Math.random()* (Player.characters[0].max_health/3) + 1);
     var randomHealth = Math.floor(Math.random()* ((Player.characters[0].max_health) - Player.characters[0].attack) + Player.characters[0].attack);
@@ -33,9 +21,6 @@ var test_player = {
         gold: randomGold
     }
 };
-
-console.log(findFoe(test_player))
-
 var fight = (player, foe) => {
 
     try{
