@@ -1,16 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const hbs = require('hbs');
-const hbsHelpers = require('handlebars-helpers')
 const port = process.env.PORT || 8080;
 
-var authentication = false;
-var user = 'Characters';
+let authentication = false;
+let user = 'Characters';
 
 const database = require('./database/database.js');
 const functions = require('./javascript/functions.js');
 
-var app = express();
+let app = express();
+
 hbs.registerPartials(__dirname + '/views/partials');
 
 app.use(bodyParser.json());
@@ -95,6 +95,7 @@ app.post('/insert', async (request, response) => {
         });
         output = "Account successfully created"
     }
+
     response.status(400)
     response.render('sign_up.hbs', {
         title_page: 'Sign Up Form',
@@ -291,7 +292,7 @@ app.post('/fight', async (request, response) => {
     var player = current_battle.player;
     var foe = current_battle.foe;
 
-    var fight_result = functions.fight(player, foe)
+    var fight_result = functions.fight(player, foe);
 
     player = fight_result.player;
     foe = fight_result.foe;
