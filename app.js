@@ -95,6 +95,7 @@ app.post('/insert', async (request, response) => {
         });
         output = "Account successfully created"
     }
+    response.status(400)
     response.render('sign_up.hbs', {
         title_page: 'Sign Up Form',
         header: 'Registration Form',
