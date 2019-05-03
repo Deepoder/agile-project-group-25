@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
     <script type="text/javascript" src="JS/game.js"></script>
 </head>
-<body class="body">
+<body>
 
 <!--
 navbar
@@ -26,7 +26,7 @@ navbar
     $(document).ready(function () {
         $('.toggle').click(function () {
             $('.toggle').toggleClass('active')
-        })
+        });
     });
 </script>
 
@@ -47,7 +47,7 @@ navbar
     <input type="password" name="" placeholder="Enter password" required>
     <input type="submit" value="Login">
     <span class="text">Don't have an account?<br/>
-        <button  type="button" id="createAcc" data-toggle="modal" data-target="#exampleModalCenter">Create one</button> for free!
+        <button type="button" id="createAcc" data-toggle="modal" data-target="#exampleModalCenter">Create one</button> for free!
     </span>
 </form>
 
@@ -84,7 +84,9 @@ navbar
                     </div>
                     <input class="btn btnbtn" type="submit" value="Sign up"><br/><br/>
                     <small id="loginExitModal">Already have an account?
-                        <button type="button" id="closeModal" data-dismiss="modal" aria-hidden="true" aria-label="Close">Login</button>
+                        <button type="button" id="closeModal" data-dismiss="modal" aria-hidden="true"
+                                aria-label="Close">Login
+                        </button>
                     </small>
                 </form>
             </div>

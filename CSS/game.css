@@ -31,7 +31,6 @@ body {
     transition-property: transform, box-shadow;
     transition: 0s, 1s;
     transition-duration: 0.5s, 0.5s;
-
 }
 
 
@@ -255,7 +254,7 @@ body {
     color: white;
 }
 
-.btnbtn{
+.btnbtn {
     background-color: #067655;
     color: white;
 }
