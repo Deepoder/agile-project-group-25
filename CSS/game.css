@@ -152,7 +152,7 @@ body {
 
 }
 
-.box h1 {
+.box h2 {
     color: white;
     text-transform: uppercase;
     font-weight: 500;
@@ -196,4 +196,50 @@ body {
     background: green;
     border: 2px solid green;
 
+}
+
+.modal-content {
+    background: black;
+}
+
+.modal-body {
+    background: black;
+}
+
+#closeModal {
+    cursor: pointer;
+    color: #067655;
+}
+
+.text {
+    color: white;
+    font-size: medium;
+}
+
+#createAcc {
+    color: coral;
+}
+
+#createAcc:hover {
+    color: coral;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+#loginExitModal {
+    font-size: medium;
+}
+
+#closeModal:hover {
+    font-size: medium;
+    text-decoration: underline;
+}
+
+.modal-title, .close {
+    color: white;
+}
+
+.btnbtn{
+    background-color: #067655;
+    color: white;
 }

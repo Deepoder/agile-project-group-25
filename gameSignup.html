@@ -42,19 +42,55 @@ navbar
 <a href="gameHome.html"><img class="myLogo" src="Images/raevialogo.png" alt="gamelogo"></a>
 
 <form class="box" method="post">
-    <h1>Login</h1>
+    <h2>Login</h2>
     <input type="email" name="" placeholder="Enter email" required>
     <input type="password" name="" placeholder="Enter password" required>
     <input type="submit" value="Login">
+    <span class="text">Don't have an account?<br/>
+        <a id="createAcc" data-toggle="modal" data-target="#exampleModalCenter">Create one</a> for free!
+    </span>
 </form>
 
 
-
-
-
-
-
-
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">SIGN UP</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-white">
+                <form>
+                    <div class="form-group">
+                        <label for="exampleInputUsername">Username</label>
+                        <input type="text" class="form-control" id="exampleInputUsername" aria-describedby="emailHelp"
+                               placeholder="Username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail">Email address</label>
+                        <input type="email" class="form-control" id="exampleInputEmail" aria-describedby="emailHelp"
+                               placeholder="Email" required>
+                        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                            else.
+                        </small>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Password</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password"
+                               required>
+                    </div>
+                    <input class="btn btnbtn" type="submit" value="Sign up"><br/><br/>
+                    <small id="loginExitModal">Already have an account?
+                        <a id="closeModal" data-dismiss="modal" aria-hidden="true" aria-label="Close">Login</a>
+                    </small>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
