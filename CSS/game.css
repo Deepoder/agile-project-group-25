@@ -211,6 +211,8 @@ body {
     color: #067655;
     border: none;
     background: transparent;
+    margin: 0;
+    padding: 0;
 }
 
 .text {
@@ -222,6 +224,8 @@ body {
     color: coral;
     background: transparent;
     border: none;
+    margin: 0;
+    padding: 0;
 }
 
 #createAcc:hover {
@@ -230,6 +234,8 @@ body {
     text-decoration: underline;
     background: transparent;
     border: none;
+    margin: 0;
+    padding: 0;
 }
 
 #loginExitModal {
@@ -241,6 +247,8 @@ body {
     text-decoration: underline;
     background: transparent;
     border: none;
+    margin: 0;
+    padding: 0;
 }
 
 .modal-title, .close {
