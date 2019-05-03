@@ -209,6 +209,8 @@ body {
 #closeModal {
     cursor: pointer;
     color: #067655;
+    border: none;
+    background: transparent;
 }
 
 .text {
@@ -218,12 +220,16 @@ body {
 
 #createAcc {
     color: coral;
+    background: transparent;
+    border: none;
 }
 
 #createAcc:hover {
     color: coral;
     cursor: pointer;
     text-decoration: underline;
+    background: transparent;
+    border: none;
 }
 
 #loginExitModal {
@@ -233,6 +239,8 @@ body {
 #closeModal:hover {
     font-size: medium;
     text-decoration: underline;
+    background: transparent;
+    border: none;
 }
 
 .modal-title, .close {
