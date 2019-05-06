@@ -207,13 +207,21 @@ body {
 
 #closeModal {
     cursor: pointer;
-    color: #067655;
+    color: white;
     border: none;
     background: transparent;
     margin: 0;
     padding: 0;
 }
 
+#closeModal:hover {
+    cursor: pointer;
+    color: #067655;
+    border: none;
+    background: transparent;
+    margin: 0;
+    padding: 0;
+}
 .text {
     color: white;
     font-size: medium;
@@ -237,9 +245,6 @@ body {
     padding: 0;
 }
 
-#loginExitModal {
-    font-size: medium;
-}
 
 #closeModal:hover {
     font-size: medium;
