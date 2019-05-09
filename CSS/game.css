@@ -70,9 +70,16 @@ body {
     width: 0;
     height: calc(100vh - 60px);
     padding: 0 5px;
-    background: transparent;
+    background: black;
     z-index: 1000;
     transition: all 0.8s ease-in-out;
+}
+
+.nav-background {
+    background-color: black;
+    display: block;
+    z-index: 1001;
+    height: 75px;
 }
 
 .nav-sidebar ul {
@@ -264,79 +271,62 @@ body {
     color: white;
 }
 
-/*
-#playnow{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #ffffff;
-    padding: 30px 60px;
-    font-size: 30px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    text-decoration: none;
+
+
+/* entire container, keeps perspective */
+.flip-container {
+    perspective: 1000px;
+
+}
+/* flip the pane when hovered */
+.flip-container:hover .flipper, .flip-container.hover .flipper {
+    transform: rotateY(180deg);
 }
 
-#playnow:before{
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    bottom: 2px;
-    width: 50%;
+.flip-container, .front, .back {
+    width: 200px;
+    height: 260px;
+    margin: 10px;
+
 }
-#playnow span:nth-child(1){
+
+/* flip speed goes here */
+.flipper {
+    transition: 0.8s;
+    transform-style: preserve-3d;
+    position: relative;
+
+}
+
+/* hide back of pane during swap */
+.front, .back {
+    backface-visibility: hidden;
+    background-color: white;
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(to right, #0c002b, #1779ff);
-    animation: animate1 2s linear infinite;
-}
-@keyframes animate1 {
-    0%{
-        transform: translateX(-100%);
-    }
-    100%{
-        transform: translateX(100%);
-    }
-}
-
-#playnow span:nth-child(2){
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 2px;
-    height: 100%;
-    background: linear-gradient(to bottom, #0c002b, #1779ff);
-    animation: animate2 2s linear infinite;
-
-}
-@keyframes animate2 {
-    0%{
-        transform: translateY(100%);
-    }
-    100%{
-        transform: translateY(-100%);
-    }
-}
-#playnow span:nth-child(3){
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(to left, #0c002b, #1779ff);
-}
+    border-radius: 4px;
 
 
-#playnow span:nth-child(4){
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 2px;
-    height: 100%;
-    background: linear-gradient(to top, #0c002b, #1779ff);
-}*/
+}
+
+/* front pane, placed above back */
+.front {
+    z-index: 2;
+    /* for firefox 31 */
+    transform: rotateY(0deg);
+    margin: auto;
+
+
+}
+
+/* back, initially hidden pane */
+.back {
+    transform: rotateY(180deg);
+    margin: auto;
+
+}
+.items{
+    position: relative;
+    margin: auto;
+}
